@@ -19,11 +19,11 @@ from .exceptions import *
 
 
 def includeme(config):
+    from . import config as config_module
+    settings = config.get_settings()
+    config_module.config._from_settings(settings)
+
     from eor_settings import ParseSettings
-
-    from .config import config as my_config
-    my_config.set_defaults()
-
     (ParseSettings(config.get_settings(), prefix='eor-auth')
         .bool('debug-auth', default=False)
         .string('vk-app-id', default=None)
