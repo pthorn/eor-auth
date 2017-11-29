@@ -11,7 +11,7 @@ requires = [
 
 setup(
     name='eor-auth',
-    version='0.0.1',
+    version='1.0.0',
     description='An authentication library',
     long_description='',
     classifiers=[
