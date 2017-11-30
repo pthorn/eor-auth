@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 here = os.path.abspath(os.path.dirname(__file__))
 
 requires = [
-    'passlib == 1.6.5',
+    'passlib >= 1.7.1',
     'eor-settings'
 ]
 
