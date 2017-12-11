@@ -87,9 +87,14 @@ class SessionUser(object):
 
         return perms
 
-    # TODO
-    #def has_permission(self, permission, object_type, object_id=None):
-    #    return config.user_model.has_permission_for_object_type(permission, object_type, object_id)
+    def has_permission(self, object_type, permission, object_id=None):
+        # TODO object id
+        for role in self.entity.roles:
+            for perm in role.permissions:
+                if perm.object_type == object_type and perm.permission == permission:
+                    return True
+
+        return False
 
     def _on_new_request(self, request):
         """
