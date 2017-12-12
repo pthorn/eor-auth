@@ -22,16 +22,13 @@ class SessionUser(object):
      if that time is > 5 min ago, write to the database and reset it.
     """
 
-    SESSION_KEY = 'user'
-    ACTIVITY_UPDATE_MIN = 5
-
     @classmethod
     def create_from_session(cls, request):
         """
         create and return a SessionUser object for current user, or return None
         """
         try:
-            session_dict = request.session[cls.SESSION_KEY]
+            session_dict = request.session[config.session_key]
         except KeyError:
             return None
 
@@ -55,7 +52,7 @@ class SessionUser(object):
 
         obj = cls(session_dict)
         obj.entity = user_entity
-        request.session[cls.SESSION_KEY] = session_dict
+        request.session[config.session_key] = session_dict
 
         return obj
 
@@ -122,7 +119,7 @@ class SessionUser(object):
         update last activity time in database if it's older than n minutes
         """
         if (datetime.datetime.utcnow() - self.session_dict['last_activity'] >
-           datetime.timedelta(minutes=self.ACTIVITY_UPDATE_MIN)):
+           datetime.timedelta(minutes=config.activity_update_min)):
             log.debug('update_activity(), id %s', self.id)
             self.entity.update_last_activity()
             self.session_dict['last_activity'] = datetime.datetime.utcnow()

@@ -6,6 +6,8 @@ class Config(object):
         self.sqlalchemy_session = None
         self.user_model = None
         self.session_class = None
+        self.session_key = 'eor-user'
+        self.activity_update_min = 5
         #self.use_xhr = False
         #self.social_delegate = None
 
