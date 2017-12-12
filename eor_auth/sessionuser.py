@@ -11,6 +11,13 @@ from .config import config
 from .api import construct_principal
 
 
+def init(config):
+    from pyramid.events import NewRequest
+
+    config.add_request_method(request_get_user, 'user', reify=True)
+    config.add_subscriber(new_request_listener, NewRequest)
+
+
 class SessionUser(object):
     """
     An object representing an authenticated user.
@@ -146,16 +153,4 @@ def new_request_listener(event):
     NewRequest listener
     http://docs.pylonsproject.org/docs/pyramid/en/1.5-branch/api/events.html#pyramid.events.NewRequest
     """
-    # TODO check for nonexistent & disabled user when updating from entity!?
     user = event.request.user
-    #
-    # if user:
-    #     user.new_request(event)
-
-
-def get_principals_for_userid_callback(userid, request):
-    """
-    return None if the userid doesn’t exist
-    or a sequence of principal identifiers (possibly empty) if the user does exist
-    """
-    return request.user.get_principals() if request.user else None

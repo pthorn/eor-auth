@@ -19,8 +19,9 @@ from .exceptions import *
 
 
 def includeme(config):
-    from . import config as config_module
     settings = config.get_settings()
+
+    from . import config as config_module
     config_module.config._from_settings(settings)
 
     from eor_settings import ParseSettings
@@ -29,8 +30,13 @@ def includeme(config):
         .string('vk-app-id', default=None)
         .string('vk-app-secret', default=None))
 
-    _configure_authn(config)
+    from .authn_policy import init as authn_policy_init
+    authn_policy_init(config)
+
     _configure_authz(config)
+
+    from .sessionuser import init as sessionuser_init
+    sessionuser_init(config)
 
     # TODO consolidate resource factories
     from pyramid.security import authenticated_userid, Allow, Authenticated, DENY_ALL
@@ -58,25 +64,6 @@ def includeme(config):
     add('eor-auth.facebook-login-cb',   R'/auth/login/facebook-callback',    request_method=['GET'])
 
     config.scan('.social')
-
-
-def _configure_authn(config):
-    from pyramid.authentication import SessionAuthenticationPolicy
-    from pyramid.events import NewRequest
-    from .sessionuser import (
-        get_principals_for_userid_callback,
-        request_get_user,
-        new_request_listener
-    )
-
-    authn_policy = SessionAuthenticationPolicy(
-        callback=get_principals_for_userid_callback,
-        debug=False
-    )
-    config.set_authentication_policy(authn_policy)
-
-    config.add_request_method(request_get_user, 'user', reify=True)
-    config.add_subscriber(new_request_listener, NewRequest)
 
 
 def _configure_authz(config):
