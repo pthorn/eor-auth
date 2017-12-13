@@ -140,13 +140,15 @@ class SessionUser(object):
             self.session_dict['last_activity'] = datetime.datetime.utcnow()
             # TODO session.changed()!
 
-
-    def __unicode__(self):
-        return u'SessionUser(id={id}, email={email}, real_name={real_name}'.format(
+    def __repr__(self):
+        return 'SessionUser(id={id}, login={login}, name={name})'.format(
             id = self.id,
-            email = self.email,
-            real_name = self.real_name
+            login = self.login,
+            name = self.entity.name
         )
+
+    def __str__(self):
+        return self.__repr__()
 
 
 def request_get_user(request):
