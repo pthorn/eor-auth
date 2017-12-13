@@ -34,10 +34,16 @@ class SessionUser(object):
         """
         create and return a SessionUser object for current user, or return None
         """
-        try:
-            session_dict = request.session[config.session_key]
-        except KeyError:
-            return None
+        if config.force_user_id:
+            session_dict = {
+                'id': config.force_user_id,
+                'last_activity': datetime.datetime.utcnow()
+            }
+        else:
+            try:
+                session_dict = request.session[config.session_key]
+            except KeyError:
+                return None
 
         obj = cls(session_dict)
 
@@ -105,18 +111,20 @@ class SessionUser(object):
         called only from SessionUser.create_from_session()
         """
         try:
-            self.entity = config.user_model.get_by_id_with_permissions(self.session_dict['id'])
+            self.entity = config.user_model.get_by_id_with_permissions(self.id)
         except NoResultFound:
-            log.warn('user entity %s not found, logging out', self.session_dict['id'])
+            log.warn('user entity %s not found, logging out', self.id)
             request.session.invalidate()
             return None
 
         if not self.entity.can_login():
-            log.warn('user entity %s (%s) not allowed to login, logging out', self.entity.id, self.entity.login)
+            log.warn('user entity %s (%s) not allowed to login, logging out', self.id, self.login)
             request.session.invalidate()
             return None
 
-        self._update_activity()
+        if not config.force_user_id:
+            self._update_activity()
+
         self.entity.eor_auth_flush_and_expunge()
 
         return self

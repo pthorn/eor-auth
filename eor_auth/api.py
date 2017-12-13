@@ -69,7 +69,7 @@ def login_user(request, user_entity):
 
     log.info('login, user %s / %s, ip %s',
              user_entity.login, user_entity.id, request.ip)
-    return remember(request, session_user.id)
+    return remember(request, session_user.id)  # remember() is not required
 
 
 def logout_user(request):
