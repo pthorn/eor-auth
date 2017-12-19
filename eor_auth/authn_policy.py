@@ -21,9 +21,9 @@ class EORAuthenticationPolicy(CallbackAuthenticationPolicy):
 
     def remember(self, request, userid, **kw):
         """ Store a userid in the session."""
-        pass  # SessionUser.create_and_save_to_session() does it
+        # SessionUser.create_and_save_to_session() does it
         # request.session[self.userid_key] = userid
-        # return []
+        return []
 
     def forget(self, request):
         """ Remove the stored userid from the session."""
