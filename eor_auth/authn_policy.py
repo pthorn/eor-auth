@@ -16,7 +16,7 @@ class EORAuthenticationPolicy(CallbackAuthenticationPolicy):
     def unauthenticated_userid(self, request):
         try:
             return request.user.id  # can be forced with eor_auth.force_user_id
-        except KeyError:
+        except AttributeError:
             return None
 
     def remember(self, request, userid, **kw):
