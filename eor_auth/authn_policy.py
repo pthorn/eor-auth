@@ -1,5 +1,7 @@
 from pyramid.authentication import CallbackAuthenticationPolicy
 
+from eor_settings import get_setting
+
 from .config import config
 
 
@@ -11,7 +13,7 @@ def init(config):
 class EORAuthenticationPolicy(CallbackAuthenticationPolicy):
     def __init__(self):
         self.callback = get_principals_for_userid_callback
-        self.debug = True
+        self.debug = get_setting('eor-auth.debug-auth')
 
     def unauthenticated_userid(self, request):
         try:
