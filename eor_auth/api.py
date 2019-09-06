@@ -94,7 +94,8 @@ def authenticate_and_login_user(request, user_entity, password):
         return None
 
     if not user_entity.can_login():
-        log.info('login failed: user %s, status %s, ip %s' % (user_entity.login, user_entity.status, request.ip))
+        log.info('login failed: user %s, is_enabled %r, is_confirmed %r, ip %s' % (
+            user_entity.login, user_entity.is_enabled, user_entity.is_confirmed, request.ip))
         return None
 
     return login_user(request, user_entity)
